@@ -3,9 +3,8 @@ This module helps to generate interactive gantt charts / roadmaps from
 csv files. Used in Jupyter Notebooks with bqplot, charts are interactive
 and can changed in the plot frame.
 The changes are then stored back in the dataframe / csv.
+Some of this code is inspired by https://github.com/stefanSchinkel/gantt
 """
-import os
-import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -100,6 +99,7 @@ class Gantt_chart(object):
         plt.ylim(0.5, self.nActivities + .5)
 
         plt.yticks(self.yPosition, self.activity)
+        plt.xticks(rotation=35)
 
     def preparePlot(self):
         """
