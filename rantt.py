@@ -88,23 +88,27 @@ class Gantt_chart(object):
             self.colors[self.workstream[i]] = colormap(i)
         # colors = [colormap(i) for i in self.workstream]
 
-    def get(self, name):
-        return super().__getattribute__(name)
-
-    def formatPlot(self):
+    def _formatPlot(self):
         """
         format the plot environment, e.g. labels, colors, ticks, etc.
         """
+
         plt.xlim(np.min(self.startDate), np.max(self.endDate))
         plt.ylim(0.5, self.nActivities + .5)
 
         plt.yticks(self.yPosition, self.activity)
         plt.xticks(rotation=35)
 
-    def preparePlot(self):
+    def preparePlot(self, style='default'):
         """
         prepare the plot environment
+
+        Keyword arguments:
+        style -- string, pyplot style defined
+        font_size -- int, defining font size
         """
+        plt.style.use(style)
+
         self.fig = plt.figure(figsize=[20, 10])
         self.ax = self.fig.add_subplot(111)
         self.numDuration = (mlib.dates.date2num(self.endDate) -
@@ -119,8 +123,11 @@ class Gantt_chart(object):
                              color=colorsarray)
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
         self.ax.xaxis.set_major_formatter(self.formatter)
+        self._formatPlot()
+        self.showGantt()
 
-        self.formatPlot()
+    def get(self, name):
+        return super().__getattribute__(name)
 
     def showCSV(self):
         """
