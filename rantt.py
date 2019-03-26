@@ -37,8 +37,7 @@ class Gantt_chart(object):
         'Workstream', 'Milestone', 'Deliverable'
         """
 
-        fid = pd.read_csv(self.dataFile)
-
+        fid = pd.read_csv(self.dataFile).dropna(how='all')
         fid.columns = map(str.lower, fid.columns)
 
         self.fid = fid
@@ -54,6 +53,16 @@ class Gantt_chart(object):
         except AttributeError:
             print("No workstreams defined")
             pass
+        try:
+            self.milestone = pd.to_datetime(self.fid['milestone'],
+                                            yearfirst=True)
+        except AttributeError:
+            print("No milestones defined.")
+        try:
+            self.deliverable = pd.to_datetime(self.fid['deliverable'],
+                                              yearfirst=True)
+        except AttributeError:
+            print("No deliverables defined.")
 
         self.nActivities = len(self.fid.index)
         self.activity = self.fid['activity']
@@ -61,8 +70,6 @@ class Gantt_chart(object):
                                         yearfirst=True)
         self.endDate = pd.to_datetime(self.fid['end date'],
                                       yearfirst=True)
-        self.milestone = pd.to_datetime(self.fid['milestone'],
-                                        yearfirst=True)
         self.duration = self.endDate - self.startDate
         self.yPosition = np.arange(self.nActivities, 0, -1)
 
@@ -106,9 +113,17 @@ class Gantt_chart(object):
         """
         x = self.milestone[self.milestone.notnull()]
         y = self.yPosition[x.index]
-        xnum = mlib.dates.date2num(x)
-        plt.plot_date(x, y, marker='D', markersize=10., color='orange',
+        plt.plot_date(x, y, marker='D', markersize=12., color='orange',
                       markeredgecolor='gray', zorder=3)
+
+    def addDeliverable(self):
+        """
+        add Deliverables as squares to the gantt chart.
+        """
+        x = self.deliverable[self.deliverable.notnull()]
+        y = self.yPosition[x.index]
+        plt.plot_date(x, y, marker='s', markersize=17, color='#db0f0f',
+                      markeredgecolor='black', zorder=2)
 
     def preparePlot(self, style='default'):
         """
@@ -133,6 +148,7 @@ class Gantt_chart(object):
                              alpha=.8,
                              color=colorsarray)
         self.addMilestone()
+        self.addDeliverable()
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
         self.ax.xaxis.set_major_formatter(self.formatter)
         self._formatPlot()
