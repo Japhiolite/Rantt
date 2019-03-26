@@ -17,7 +17,7 @@ class Gantt_chart(object):
     Class to load render and plot a Gantt chart or roadmap
     """
 
-    def __init__(self, dataFile):
+    def __init__(self, dataFile, colorstyle='tab10'):
         """
         Initialization of a new Gantt instance using a provided
         data file in csv form.
@@ -28,7 +28,7 @@ class Gantt_chart(object):
         self.dataFile = dataFile
 
         self._loadData()
-        self._processData()
+        self._processData(colorstyle)
 
     def _loadData(self):
         """
@@ -44,7 +44,7 @@ class Gantt_chart(object):
         self.fid = fid
         self._check_columns()
 
-    def _processData(self):
+    def _processData(self, colorstyle):
         """
         Prepare the loaded csv file for plotting in a Gantt chart
         """
@@ -61,11 +61,12 @@ class Gantt_chart(object):
                                         yearfirst=True)
         self.endDate = pd.to_datetime(self.fid['end date'],
                                       yearfirst=True)
-
+        self.milestone = pd.to_datetime(self.fid['milestone'],
+                                        yearfirst=True)
         self.duration = self.endDate - self.startDate
         self.yPosition = np.arange(self.nActivities, 0, -1)
 
-        self._setWScolors()
+        self._setWScolors(colorstyle)
 
     def _check_columns(self):
         mandatory_cols = ['activity', 'start date', 'end date']
@@ -78,12 +79,12 @@ class Gantt_chart(object):
         else:
             pass
 
-    def _setWScolors(self):
+    def _setWScolors(self, colorstyle):
         """
         set colors unique to a workstream
         """
         self.colors = {}
-        colormap = plt.get_cmap('tab10', len(self.workstream))
+        colormap = plt.get_cmap(colorstyle, len(self.workstream))
         for i in range(len(self.workstream)):
             self.colors[self.workstream[i]] = colormap(i)
         # colors = [colormap(i) for i in self.workstream]
@@ -98,6 +99,16 @@ class Gantt_chart(object):
 
         plt.yticks(self.yPosition, self.activity)
         plt.xticks(rotation=35)
+
+    def addMilestone(self):
+        """
+        add Milestones as diamonds to the gantt chart.
+        """
+        x = self.milestone[self.milestone.notnull()]
+        y = self.yPosition[x.index]
+        xnum = mlib.dates.date2num(x)
+        plt.plot_date(x, y, marker='D', markersize=10., color='orange',
+                      markeredgecolor='gray', zorder=3)
 
     def preparePlot(self, style='default'):
         """
@@ -121,10 +132,10 @@ class Gantt_chart(object):
                              height=.5,
                              alpha=.8,
                              color=colorsarray)
+        self.addMilestone()
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
         self.ax.xaxis.set_major_formatter(self.formatter)
         self._formatPlot()
-        self.showGantt()
 
     def get(self, name):
         return super().__getattribute__(name)
@@ -141,3 +152,13 @@ class Gantt_chart(object):
         Show plot
         """
         plt.show()
+
+    @staticmethod
+    def save(savePath='gantt_chart.png'):
+        """
+        Save the gantt-plot to a png file.
+
+        Keyword arguments:
+        savePath -- string, defining path to save file.
+        """
+        plt.savefig(savePath, dpi=400, bbox_inches='tight')
