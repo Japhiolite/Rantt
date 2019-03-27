@@ -1,6 +1,7 @@
-﻿Workstream,Activity,Start Date,End Date,Milestone
-WP1,Draft Proposal,2019-01-15,2019-03-01,2019-03-01
-WP1,Proofread,2019-02-20,2019-03-01,
-WP2,Set up data base,2019-03-15,2019-05-01,
+﻿Workstream,Activity,Start Date,End Date,Milestone,Deliverable
+WP1,Draft Proposal,2019-01-15,2019-03-01,2019-03-01,
+WP1,Proofread,2019-02-15,2019-02-22,,
+WP2,Design data model,2019-03-01,2019-03-15,2019-03-15,2019-03-15
+WP2,Set up data base,2019-03-15,2019-05-01,,
 WP2,Implement data model,2019-04-01,2019-05-01,2019-05-01
-WP3,Prepare kick-off meeting,2019-02-01,2019-02-10,
+WP3,Prepare kick-off meeting,2019-02-01,2019-02-10,,
