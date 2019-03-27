@@ -50,19 +50,21 @@ class Gantt_chart(object):
         try:
             self.workstream = self.fid['workstream'].unique()
             self.fid['workstream'] = self.fid['workstream'].astype('category')
-        except AttributeError:
+        except KeyError:
             print("No workstreams defined")
             pass
         try:
             self.milestone = pd.to_datetime(self.fid['milestone'],
                                             yearfirst=True)
-        except AttributeError:
+        except KeyError:
             print("No milestones defined.")
+            pass
         try:
             self.deliverable = pd.to_datetime(self.fid['deliverable'],
                                               yearfirst=True)
-        except AttributeError:
+        except KeyError:
             print("No deliverables defined.")
+            pass
 
         self.nActivities = len(self.fid.index)
         self.activity = self.fid['activity']
@@ -129,16 +131,22 @@ class Gantt_chart(object):
         add a legend explaining WS colors, milestones and deliverables
         """
         legend_elements = []
-        if self.milestone is not None:
+        try:
+            self.milestone
             legend_elements.append(mlib.lines.Line2D([], [],
                                    marker='D', color='orange',
                                    markersize=12, markeredgecolor='gray',
                                    label='Milestone'))
-        if self.deliverable is not None:
+        except AttributeError:
+            pass
+        try:
+            self.deliverable
             legend_elements.append(mlib.lines.Line2D([], [],
                                    marker='s', color='#db0f0f',
                                    markersize=12, markeredgecolor='black',
                                    label='Deliverable'))
+        except AttributeError:
+            pass
         plt.legend(handles=legend_elements, fontsize='xx-large',
                    markerscale=1.6, fancybox=False, labelspacing=1.3)
 
@@ -164,8 +172,14 @@ class Gantt_chart(object):
                              height=.5,
                              alpha=.8,
                              color=colorsarray)
-        self.addMilestone()
-        self.addDeliverable()
+        try:
+            self.addMilestone()
+        except AttributeError:
+            pass
+        try:
+            self.addDeliverable()
+        except AttributeError:
+            pass
         self.addLegend()
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
         self.ax.xaxis.set_major_formatter(self.formatter)
