@@ -94,7 +94,6 @@ class Gantt_chart(object):
         colormap = plt.get_cmap(colorstyle, len(self.workstream))
         for i in range(len(self.workstream)):
             self.colors[self.workstream[i]] = colormap(i)
-        # colors = [colormap(i) for i in self.workstream]
 
     def _formatPlot(self):
         """
@@ -125,6 +124,24 @@ class Gantt_chart(object):
         plt.plot_date(x, y, marker='s', markersize=17, color='#db0f0f',
                       markeredgecolor='black', zorder=2)
 
+    def addLegend(self):
+        """
+        add a legend explaining WS colors, milestones and deliverables
+        """
+        legend_elements = []
+        if self.milestone is not None:
+            legend_elements.append(mlib.lines.Line2D([], [],
+                                   marker='D', color='orange',
+                                   markersize=12, markeredgecolor='gray',
+                                   label='Milestone'))
+        if self.deliverable is not None:
+            legend_elements.append(mlib.lines.Line2D([], [],
+                                   marker='s', color='#db0f0f',
+                                   markersize=12, markeredgecolor='black',
+                                   label='Deliverable'))
+        plt.legend(handles=legend_elements, fontsize='xx-large',
+                   markerscale=1.6, fancybox=False, labelspacing=1.3)
+
     def preparePlot(self, style='default'):
         """
         prepare the plot environment
@@ -149,9 +166,11 @@ class Gantt_chart(object):
                              color=colorsarray)
         self.addMilestone()
         self.addDeliverable()
+        self.addLegend()
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
         self.ax.xaxis.set_major_formatter(self.formatter)
         self._formatPlot()
+        self.ax.tick_params(labelsize='x-large')
 
     def get(self, name):
         return super().__getattribute__(name)
