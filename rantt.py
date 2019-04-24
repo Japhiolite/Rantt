@@ -162,16 +162,13 @@ class Gantt_chart(object):
 
         self.fig = plt.figure(figsize=[20, 10])
         self.ax = self.fig.add_subplot(111)
-        self.numDuration = (mlib.dates.date2num(self.endDate) -
-                            mlib.dates.date2num(self.startDate))
-        self.numStart = mlib.dates.date2num(self.startDate)
         colorsarray = [self.colors.get(i) for i in self.fid['workstream']]
-        self.bars = plt.barh(self.yPosition, self.numDuration,
-                             left=self.numStart,
-                             align='center',
-                             height=.5,
-                             alpha=.8,
-                             color=colorsarray)
+        self.bars = plt.hlines(self.yPosition,
+                               self.endDate.values,
+                               self.startDate.values,
+                               linewidth=40,
+                               alpha=.8,
+                               color=colorsarray)
         try:
             self.addMilestone()
         except AttributeError:
@@ -181,10 +178,11 @@ class Gantt_chart(object):
         except AttributeError:
             pass
         self.addLegend()
-        self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
-        self.ax.xaxis.set_major_formatter(self.formatter)
+        #self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
+        #self.ax.xaxis.set_major_formatter(self.formatter)
         self._formatPlot()
         self.ax.tick_params(labelsize='x-large')
+        plt.show()
 
     def get(self, name):
         return super().__getattribute__(name)
