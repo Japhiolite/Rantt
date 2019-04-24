@@ -8,6 +8,7 @@ Some of this code is inspired by https://github.com/stefanSchinkel/gantt
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from datetime import datetime
 import matplotlib as mlib
 # import bqplot as bp
 
@@ -108,6 +109,12 @@ class Gantt_chart(object):
         plt.yticks(self.yPosition, self.activity)
         plt.xticks(rotation=35)
 
+    def _get_date(self):
+        """
+        get current date in strftime
+        """
+        return datetime.today().strftime("%Y-%m-%d")
+
     def addMilestone(self):
         """
         add Milestones as diamonds to the gantt chart.
@@ -115,7 +122,7 @@ class Gantt_chart(object):
         x = self.milestone[self.milestone.notnull()]
         y = self.yPosition[x.index]
         plt.plot_date(x, y, marker='D', markersize=12., color='orange',
-                      markeredgecolor='gray', zorder=3)
+                      markeredgecolor='gray', zorder=4)
 
     def addDeliverable(self):
         """
@@ -124,7 +131,7 @@ class Gantt_chart(object):
         x = self.deliverable[self.deliverable.notnull()]
         y = self.yPosition[x.index]
         plt.plot_date(x, y, marker='s', markersize=17, color='#db0f0f',
-                      markeredgecolor='black', zorder=2)
+                      markeredgecolor='black', zorder=3)
 
     def addLegend(self):
         """
@@ -150,7 +157,7 @@ class Gantt_chart(object):
         plt.legend(handles=legend_elements, fontsize='xx-large',
                    markerscale=1.6, fancybox=False, labelspacing=1.3)
 
-    def preparePlot(self, style='default'):
+    def preparePlot(self, style='default', current_date=True):
         """
         prepare the plot environment
 
@@ -168,7 +175,14 @@ class Gantt_chart(object):
                                self.startDate.values,
                                linewidth=40,
                                alpha=.8,
-                               color=colorsarray)
+                               color=colorsarray,
+                               zorder=2)
+
+        if current_date==True:
+            self.date_line = plt.vlines(self._get_date(), min(self.yPosition),
+                                        max(self.yPosition), colors='red',
+                                        linestyles='dashdot', alpha=.7,
+                                        linewidth=3, zorder=1)
         try:
             self.addMilestone()
         except AttributeError:
@@ -178,11 +192,10 @@ class Gantt_chart(object):
         except AttributeError:
             pass
         self.addLegend()
-        #self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
-        #self.ax.xaxis.set_major_formatter(self.formatter)
+        self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
+        self.ax.xaxis.set_major_formatter(self.formatter)
         self._formatPlot()
         self.ax.tick_params(labelsize='x-large')
-        plt.show()
 
     def get(self, name):
         return super().__getattribute__(name)
