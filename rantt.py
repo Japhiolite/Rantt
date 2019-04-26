@@ -154,6 +154,7 @@ class Gantt_chart(object):
                                    label='Deliverable'))
         except AttributeError:
             pass
+
         plt.legend(handles=legend_elements, fontsize='xx-large',
                    markerscale=1.6, fancybox=False, labelspacing=1.3)
 
@@ -198,6 +199,7 @@ class Gantt_chart(object):
         self.ax.xaxis.set_major_formatter(self.formatter)
         self.ax.xaxis.set_major_locator(self.weeks)
         self.ax.xaxis.tick_top()
+        self.ax.grid(which='major', axis='x')
 
         self._formatPlot()
         self.ax.tick_params(labelsize='x-large')
