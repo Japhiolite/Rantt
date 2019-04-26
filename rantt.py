@@ -157,6 +157,11 @@ class Gantt_chart(object):
 
         plt.legend(handles=legend_elements, fontsize='xx-large',
                    markerscale=1.6, fancybox=False, labelspacing=1.3)
+    def addDependencies(self):
+        """
+        add dependency-arrows if tasks depend on other ones
+        """
+
 
     def preparePlot(self, style='default', current_date=True):
         """
