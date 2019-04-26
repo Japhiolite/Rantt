@@ -192,8 +192,13 @@ class Gantt_chart(object):
         except AttributeError:
             pass
         self.addLegend()
+        self.weeks = mlib.dates.DayLocator(bymonthday=(1,15))
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
+
         self.ax.xaxis.set_major_formatter(self.formatter)
+        self.ax.xaxis.set_major_locator(self.weeks)
+        self.ax.xaxis.tick_top()
+
         self._formatPlot()
         self.ax.tick_params(labelsize='x-large')
 
