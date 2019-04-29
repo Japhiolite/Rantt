@@ -66,6 +66,12 @@ class Gantt_chart(object):
         except KeyError:
             print("No deliverables defined.")
             pass
+        try:
+            self.dependency = self.fid['dependency']
+
+        except KeyError:
+            print("No dependencies defined.")
+            pass
 
         self.nActivities = len(self.fid.index)
         self.activity = self.fid['activity']
@@ -157,12 +163,20 @@ class Gantt_chart(object):
 
         plt.legend(handles=legend_elements, fontsize='xx-large',
                    markerscale=1.6, fancybox=False, labelspacing=1.3)
+
     def addDependencies(self):
         """
         add dependency-arrows if tasks depend on other ones
         """
-
-
+        try:
+            self.dependency
+            xtail = self.dependency[self.dependency.notnull()]
+            ytail = self.yPosition[xtail.index]
+            xhead = self.activity[xtail.index]
+            yhead = self.yPosition[xhead.index]
+            print(xtail, xhead)
+        except AttributeError:
+            pass
     def preparePlot(self, style='default', current_date=True):
         """
         prepare the plot environment
