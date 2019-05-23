@@ -172,11 +172,28 @@ class Gantt_chart(object):
             self.dependency
             xtail = self.dependency[self.dependency.notnull()]
             ytail = self.yPosition[xtail.index]
-            xhead = self.activity[xtail.index]
-            yhead = self.yPosition[xhead.index]
-            print(xtail, xhead)
+            indices = [self.activity.loc[self.activity == i] for i in xtail.values]
+            idx = np.array([indices[i].index.values[0] for i in range(len(indices))])
+            xhead = self.activity[idx]
+            yhead = self.yPosition[idx]
+            #print(xtail, ytail)
+            #print(xhead, yhead)
+            csstyle = "angle,angleA=-90,angleB=180,rad=5"
+            for j in xtail.index:
+                plt.annotate("",
+                            xy=(xhead[j-1], yhead[j-1]), xycoords='data',
+                            xytext=(xtail[j], ytail[j]), textcoords='data',
+                            arrowproperties=dict(arrowstyle="->",
+                                                color="0.4",
+                                                shrinkA=5, shrinkB=5,
+                                                patchA=None, 
+                                                patchB=None,
+                                                connectionstyle=csstyle))
+
+
         except AttributeError:
             pass
+
     def preparePlot(self, style='default', current_date=True):
         """
         prepare the plot environment
@@ -209,6 +226,10 @@ class Gantt_chart(object):
             pass
         try:
             self.addDeliverable()
+        except AttributeError:
+            pass
+        try:
+            self.addDependencies()
         except AttributeError:
             pass
         self.addLegend()
