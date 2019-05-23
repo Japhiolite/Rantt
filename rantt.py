@@ -176,19 +176,29 @@ class Gantt_chart(object):
             idx = np.array([indices[i].index.values[0] for i in range(len(indices))])
             xhead = self.activity[idx]
             yhead = self.yPosition[idx]
-            #print(xtail, ytail)
-            #print(xhead, yhead)
+            #print(ytail)
+            #print(yhead)
+            #print(self.yPosition)
+            print(xtail.index)
+            print(xhead.index)
+            print(ytail, yhead)
             csstyle = "angle,angleA=-90,angleB=180,rad=5"
-            for j in xtail.index:
+            c=0
+            for i,j in enumerate(xtail.index):
+                print(c)
+                print(j)
+                print(ytail[i], yhead[i])
+                plt.plot([self.startDate[j-1], self.endDate[j]],
+                         [yhead[i], ytail[i]], "ro", zorder=0)
                 plt.annotate("",
-                            xy=(xhead[j-1], yhead[j-1]), xycoords='data',
-                            xytext=(xtail[j], ytail[j]), textcoords='data',
-                            arrowproperties=dict(arrowstyle="->",
-                                                color="0.4",
-                                                shrinkA=5, shrinkB=5,
-                                                patchA=None, 
-                                                patchB=None,
-                                                connectionstyle=csstyle))
+                            xy=(self.startDate[j-1], yhead[i]), xycoords='data',
+                            xytext=(self.endDate[j], ytail[i]), textcoords='data',
+                            arrowprops=dict(arrowstyle="->",
+                                            color="0.4",
+                                            shrinkA=5, shrinkB=5,
+                                            patchA=None, 
+                                            patchB=None,
+                                            connectionstyle=csstyle))
 
 
         except AttributeError:
@@ -228,10 +238,11 @@ class Gantt_chart(object):
             self.addDeliverable()
         except AttributeError:
             pass
-        try:
-            self.addDependencies()
-        except AttributeError:
-            pass
+        #try:
+        #    self.addDependencies()
+        #except AttributeError:
+        #    pass
+        self.addDependencies()
         self.addLegend()
         self.weeks = mlib.dates.DayLocator(bymonthday=(1,15))
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
