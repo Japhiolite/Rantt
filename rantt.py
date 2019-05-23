@@ -176,25 +176,16 @@ class Gantt_chart(object):
             idx = np.array([indices[i].index.values[0] for i in range(len(indices))])
             xhead = self.activity[idx]
             yhead = self.yPosition[idx]
-            #print(ytail)
-            #print(yhead)
-            #print(self.yPosition)
-            print(xtail.index)
-            print(xhead.index)
-            print(ytail, yhead)
             csstyle = "angle,angleA=-90,angleB=180,rad=5"
-            c=0
-            for i,j in enumerate(xtail.index):
-                print(c)
-                print(j)
-                print(ytail[i], yhead[i])
-                plt.plot([self.startDate[j-1], self.endDate[j]],
-                         [yhead[i], ytail[i]], "ro", zorder=0)
+            for i in range(len(xtail.index)):
+                plt.plot([self.startDate[xtail.index[i]], self.endDate[xhead.index[i]]],
+                         [ytail[i], yhead[i]], "^", color=".3", zorder=0, alpha=.1)
                 plt.annotate("",
-                            xy=(self.startDate[j-1], yhead[i]), xycoords='data',
-                            xytext=(self.endDate[j], ytail[i]), textcoords='data',
+                            xy=(self.endDate[xhead.index[i]], yhead[i]), xycoords='data',
+                            xytext=(self.startDate[xtail.index[i]], ytail[i]), textcoords='data',
                             arrowprops=dict(arrowstyle="->",
-                                            color="0.4",
+                                            linewidth=3,
+                                            color="0.3",
                                             shrinkA=5, shrinkB=5,
                                             patchA=None, 
                                             patchB=None,
@@ -227,6 +218,12 @@ class Gantt_chart(object):
 
         if current_date==True:
             self.date_line = plt.vlines(self._get_date(), min(self.yPosition),
+                                        max(self.yPosition), colors='red',
+                                        linestyles='dashdot', alpha=.7,
+                                        linewidth=3, zorder=1)
+        elif type(current_date)==str:
+            curdat = pd.to_datetime(current_date, yearfirst=True)
+            self.date_line = plt.vlines(curdat, min(self.yPosition),
                                         max(self.yPosition), colors='red',
                                         linestyles='dashdot', alpha=.7,
                                         linewidth=3, zorder=1)
