@@ -172,30 +172,35 @@ class Gantt_chart(object):
             self.dependency
             xtail = self.dependency[self.dependency.notnull()]
             ytail = self.yPosition[xtail.index]
-            indices = [self.activity.loc[self.activity == i] for i in xtail.values]
-            idx = np.array([indices[i].index.values[0] for i in range(len(indices))])
+            indices = [self.activity.loc[self.activity == i]
+                       for i in xtail.values]
+            idx = np.array([indices[i].index.values[0]
+                            for i in range(len(indices))])
             xhead = self.activity[idx]
             yhead = self.yPosition[idx]
             csstyle = "angle,angleA=-90,angleB=180,rad=5"
             for i in range(len(xtail.index)):
-                plt.plot([self.startDate[xtail.index[i]], self.endDate[xhead.index[i]]],
-                         [ytail[i], yhead[i]], "^", color=".3", zorder=0, alpha=.1)
+                plt.plot([self.startDate[xtail.index[i]],
+                          self.endDate[xhead.index[i]]],
+                         [ytail[i], yhead[i]], "^", color=".3",
+                         zorder=0, alpha=.1)
                 plt.annotate("",
-                            xy=(self.endDate[xhead.index[i]], yhead[i]), xycoords='data',
-                            xytext=(self.startDate[xtail.index[i]], ytail[i]), textcoords='data',
-                            arrowprops=dict(arrowstyle="->",
-                                            linewidth=3,
-                                            color="0.3",
-                                            shrinkA=5, shrinkB=5,
-                                            patchA=None, 
-                                            patchB=None,
-                                            connectionstyle=csstyle))
-
-
+                             xy=(self.endDate[xhead.index[i]], yhead[i]),
+                             xycoords='data',
+                             xytext=(self.startDate[xtail.index[i]], ytail[i]),
+                             textcoords='data',
+                             arrowprops=dict(arrowstyle="->",
+                                             linewidth=3,
+                                             color="0.3",
+                                             shrinkA=5, shrinkB=5,
+                                             patchA=None,
+                                             patchB=None,
+                                             connectionstyle=csstyle))
         except AttributeError:
             pass
 
-    def preparePlot(self, style='default', current_date=True):
+    def preparePlot(self, style='default', current_date=True,
+                    add_dependencies=True):
         """
         prepare the plot environment
 
@@ -216,12 +221,12 @@ class Gantt_chart(object):
                                color=colorsarray,
                                zorder=2)
 
-        if current_date==True:
+        if current_date is True:
             self.date_line = plt.vlines(self._get_date(), min(self.yPosition),
                                         max(self.yPosition), colors='red',
                                         linestyles='dashdot', alpha=.7,
                                         linewidth=3, zorder=1)
-        elif type(current_date)==str:
+        elif type(current_date) == str:
             curdat = pd.to_datetime(current_date, yearfirst=True)
             self.date_line = plt.vlines(curdat, min(self.yPosition),
                                         max(self.yPosition), colors='red',
@@ -235,13 +240,10 @@ class Gantt_chart(object):
             self.addDeliverable()
         except AttributeError:
             pass
-        #try:
-        #    self.addDependencies()
-        #except AttributeError:
-        #    pass
-        self.addDependencies()
+        if add_dependencies is True:
+            self.addDependencies()
         self.addLegend()
-        self.weeks = mlib.dates.DayLocator(bymonthday=(1,15))
+        self.weeks = mlib.dates.DayLocator(bymonthday=(1, 15))
         self.formatter = mlib.dates.DateFormatter("%d-%b '%y")
 
         self.ax.xaxis.set_major_formatter(self.formatter)
