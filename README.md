@@ -5,13 +5,13 @@
 
 A small class to generate a Gantt chart (and in some future maybe a roadmap) using python and csv files.  
 
-### Why the distinction between Gantt chart and roadmap
+## Why the distinction between Gantt chart and roadmap
 
 Roadmap and Gantt chart may look similar, but differ at their core. While a Gantt chart is typically a rather _static_ plan with an aggregation of broken down tasks (_Activities_) directly depending on each other, a roadmap is an _agile_ approach to define chunks of work and their rough timeframe.  
 
 So while a Gantt Chart may be very detailed from the start, a roadmap orbits around self-organization and adaptive planning.
 
-### Current Status
+## Current Status
 
 Currently, this code can generate Gantt charts from csv files, implementing optional dependencies of the tasks (marked as arrows).  
 For a roadmap, systems providing more interaction, such as [bqplot](https://github.com/bloomberg/bqplot), may be implemented, so that an interactive roadmap can be created.  

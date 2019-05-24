@@ -182,7 +182,7 @@ class Gantt_chart(object):
             for i in range(len(xtail.index)):
                 plt.plot([self.startDate[xtail.index[i]],
                           self.endDate[xhead.index[i]]],
-                         [ytail[i], yhead[i]], "^", color=".3",
+                         [ytail[i], yhead[i]], ".", color=".2",
                          zorder=0, alpha=.1)
                 plt.annotate("",
                              xy=(self.endDate[xhead.index[i]], yhead[i]),
