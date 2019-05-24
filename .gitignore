@@ -1,3 +1,4 @@
 # content to not track
 rantt.code-workspace
 __pycache__/
+.DS_Store
